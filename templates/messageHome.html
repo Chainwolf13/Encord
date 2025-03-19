@@ -1,20 +1,20 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-
-    <link rel="stylesheet" href="{% static 'css/recipe-styles.css' %}">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
-
-</head>
-<body >
-<!--Regular messaging system Comments-->
-
+{#{% load static %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{##}
+{#    <link rel="stylesheet" href="{% static 'css/recipe-styles.css' %}">#}
+{##}
+{#    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"#}
+{#          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">#}
+{##}
+{##}
+{#</head>#}
+{#<body >#}
+{#<!--Regular messaging system Comments-->#}
+{##}
 {#    <div class="comments-section">#}
 {#        <!-- Display comments here -->#}
 {#        {% if messages %}#}
@@ -29,50 +29,98 @@
 {#        <p>No messages available.</p>#}
 {#        {% endif %}#}
 {#    </div>#}
+{##}
+{#<!--Encrypt/decrypt messaging system Comments-->#}
+{##}
+{#<div class="comments-section">#}
+{#    <!-- Display comments here -->#}
+{#    {% if messages %}#}
+{#        {% for message,encrypted_message, decrypted_message in messages %}#}
+{#            {% csrf_token %}#}
+{#            <div class="comment">#}
+{#                <img src="{% static 'images/cat.png' %}" class="avatar" alt="User Avatar">#}
+{#                <p class="comments">Original Message: {{ message.MessageChat }}</p>#}
+{#                <p class="comments">Encrypted Message: {{ encrypted_message }} </p>#}
+{#                <p class="comments">Decrypted Message: {{ decrypted_message }}</p>#}
+{#                <hr>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    {% else %}#}
+{#        <p>No messages available.</p>#}
+{#    {% endif %}#}
+{#</div>#}
+{##}
+{#<div class="container-fluid" style="background-color: #3d4150">#}
+{#    <div class="row justify-content-center">#}
+{#        <div class="col-6">#}
+{#            <div class="message-bar p-3">#}
+{#                <form action="{% url 'messageHome' %}" method="post">#}
+{#                    {% csrf_token %}#}
+{#                    <input class="form-control" type="text" id="freeform" name="freeform" value="message"#}
+{#                           placeholder="Enter text here..." />#}
+{#                    <button type="submit" class="btn btn-primary" class="btn col-6">Send</button>#}
+{#                </form>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{##}
+{##}
+{#</div>#}
+{##}
+{#{% endfor %}#}
+{##}
+{##}
+{##}
+{##}
+{#</body>#}
+{#</html>#}
 
-<!--Encrypt/decrypt messaging system Comments-->
+{#5:12 PM 3/19/25#}
 
-<div class="comments-section">
-    <!-- Display comments here -->
-    {% if messages %}
-        {% for message,encrypted_message, decrypted_message in messages %}
-            {% csrf_token %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/message-style.css' %}">
+</head>
+<body>
+
+<div class="message-page-container">
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <div class="friend" onclick="startConversation('Leon')">
+            <img src="{% static 'images/leon-avatar.jpg' %}" alt="Leon" class="friend-avatar">
+            <span class="friend-name">Leon</span>
+        </div>
+    </div>
+
+    <!-- Message Section -->
+    <div class="messages-section">
+        <!-- Add your message section content here -->
+        <div class="comments-section">
             <div class="comment">
-                <img src="{% static 'images/cat.png' %}" class="avatar" alt="User Avatar">
-                <p class="comments">Original Message: {{ message.MessageChat }}</p>
-                <p class="comments">Encrypted Message: {{ encrypted_message }} </p>
-                <p class="comments">Decrypted Message: {{ decrypted_message }}</p>
-                <hr>
+                <div class="avatar">
+                    <img src="{% static 'images/user-avatar.jpg' %}" alt="User" class="avatar-img">
+                </div>
+                <div class="comments">
+                    Hey Leon, how's it going?
+                </div>
             </div>
-        {% endfor %}
-    {% else %}
-        <p>No messages available.</p>
-    {% endif %}
-</div>
+        </div>
 
-<div class="container-fluid" style="background-color: #3d4150">
-    <div class="row justify-content-center">
-        <div class="col-6">
-            <div class="message-bar p-3">
-                <form action="{% url 'messageHome' %}" method="post">
-                    {% csrf_token %}
-                    <input class="form-control" type="text" id="freeform" name="freeform" value="message"
-                           placeholder="Enter text here..." />
-                    <button type="submit" class="btn btn-primary" class="btn col-6">Send</button>
-                </form>
-            </div>
+        <div class="message-bar">
+            <input type="text" class="message-input" placeholder="Type your message...">
+            <button class="send-button">Send</button>
         </div>
     </div>
 </div>
-
-
-
-</div>
-
-{#{% endfor %}#}
-
-
-
 
 </body>
 </html>
