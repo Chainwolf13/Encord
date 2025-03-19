@@ -17,7 +17,7 @@
 {#</html>#}
 
 <!--
-Oliver Calandra
+Jahmaro Gordon
 References: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_form
 -->
 {% load static %}
@@ -40,7 +40,7 @@ References: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_
 {#               <img src="{% static 'images/LogoTwo.png' %}" height="200px" width="200px"  >#}
 <img src="{% static "images/LogoWithoutText.png" %}"  height="200px" width="200px">
 
-<h1>Register</h1>
+<h1>Register Here</h1>
  <form action="{% url 'register' %}" method="post">
  {% csrf_token %}
  {{ form.as_div }}
