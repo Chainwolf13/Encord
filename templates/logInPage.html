@@ -1,5 +1,4 @@
 <!--
-Oliver Calandra
 References: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_form
 -->
 {% load static %}
@@ -15,12 +14,14 @@ References: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
 <!--CSS-->
- <link rel="stylesheet" href="{% static 'css/h4style.css' %}">
+{# <link rel="stylesheet" href="{% static 'css/h4style.css' %}">#}
+    <link rel="stylesheet" href="{% static 'css/login-page.css' %}">
+{#    <link rel="stylesheet" href="{% static 'css/.css' %}">#}
 
 <body>
 
 {#    <img src="/static/css/LogoTwo.png" id="logo" alt="logoImg">#}
-            <img src="{% static "images/LogoTwo.png" %}"  height="200px" width="200px">
+            <img src="{% static "images/LogoWithoutText.png" %}"  height="200px" width="200px">
 
 
 <div class="container-fluid" id="log-me">
