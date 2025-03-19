@@ -1,0 +1,70 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{##}
+{#<h1>Register</h1>#}
+{#<form action="{% url 'register' %}" method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ form.as_div }}#}
+{#    <input type="submit" value="Register">#}
+{#</form>#}
+{##}
+{#</body>#}
+{#</html>#}
+
+<!--
+Oliver Calandra
+References: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_form
+-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log In</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--Boot-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/static/css/h4style.css">
+
+<body>
+
+{#    <img src="/static/css/LogoTwo.png" id="logo" alt="logoImg">#}
+               <img src="{% static 'images/LogoTwo.png' %}" height="200px" width="200px"  >
+
+<h1>Register</h1>
+ <form action="{% url 'register' %}" method="post">
+ {% csrf_token %}
+ {{ form.as_div }}
+ <input type="submit" value="Register">
+ </form>
+
+
+
+{#<div class="container-fluid" id="log-me">#}
+{#    <form action="{% url 'register' %}" method="post">#}
+{#        {% csrf_token %}#}
+{#    <input type="text" name="first_name" placeholder="First Name" id="username" type="submit" value="first_name">#}
+{#    <label for="username"></label>#}
+{#    <input type="text" name="last_name"  placeholder="Last Name" id="username" type="submit" value="last_name">#}
+{#    <label for="username"></label>#}
+{#    <input type="text" name="Username"   placeholder="Create Username" id="username" type="submit" value="username">#}
+{#    <label for="username"></label>#}
+{#    <input type="password" name="Password" placeholder="Create Password" id="password" type="submit" value="password">#}
+{#    <label for="password"></label>#}
+{#    <br>#}
+{#    </form>#}
+{#        <form action="{% url 'register' %}" method="post">#}
+{#        {% csrf_token %}#}
+{#    <button type= "submit" class="log-in" id="log-in-button"> create</button>#}
+{#         </form>#}
+</div>
+</body>
+</html>

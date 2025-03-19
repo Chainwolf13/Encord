@@ -1,5 +1,5 @@
 """
-URL configuration for Encord project.
+URL configuration for mockDiscord project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -15,11 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+from Encord import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    ada
-    qwdwq
-    qqdq
+    path('', views.index_view, name='index'),
+    path('accounts/', include("django.contrib.auth.urls")),
+    path('register', views.register_view, name='register'),
+    path('logInPage.html', views.login_view, name='login'),
+    path('logout', views.logout_view, name='logout'),
+    path('messageHome.html', views.message_view, name='messageHome'),
 ]
