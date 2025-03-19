@@ -32,12 +32,13 @@ References: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="/static/css/h4style.css">
+    <link rel="stylesheet" href="/static/css/register-page.css">
 
 <body>
 
 {#    <img src="/static/css/LogoTwo.png" id="logo" alt="logoImg">#}
-               <img src="{% static 'images/LogoTwo.png' %}" height="200px" width="200px"  >
+{#               <img src="{% static 'images/LogoTwo.png' %}" height="200px" width="200px"  >#}
+<img src="{% static "images/LogoWithoutText.png" %}"  height="200px" width="200px">
 
 <h1>Register</h1>
  <form action="{% url 'register' %}" method="post">

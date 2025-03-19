@@ -1,0 +1,62 @@
+/* Apply background color */
+body {
+    background: #3d4150;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #a6adba;
+}
+
+/* Container for the form */
+.container-fluid {
+    background-color: #242933;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Input fields styling */
+input[type="text"], input[type="password"], input[type="submit"] {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #3d4150;
+    color: #ffffff;
+}
+
+/* Submit button */
+input[type="submit"], .log-in {
+    background-color: #ff6f61;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+input[type="submit"]:hover, .log-in:hover {
+    background-color: #d95c53;
+}
+
+/* Logo Styling */
+img {
+    display: block;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+/* Register Title */
+h1 {
+    color: white;
+    text-align: center;
+}
