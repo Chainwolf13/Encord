@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from Encord import views
+from .views import decrypt_message_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +28,5 @@ urlpatterns = [
     path('logInPage.html', views.login_view, name='login'),
     path('logout', views.logout_view, name='logout'),
     path('messageHome.html', views.message_view, name='messageHome'),
+    path('decrypt_message/', decrypt_message_view, name='decrypt_message')
 ]

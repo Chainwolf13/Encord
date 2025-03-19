@@ -11,6 +11,10 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from base64 import b64encode, b64decode
+from django.http import JsonResponse
+import json
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import serialization, hashes
 
 import datetime
 
@@ -74,48 +78,54 @@ def login_view(request):
     return render(request, 'logInPage.html')
 
 
+# def message_view(request):
+#     context = {}
+#
+#     # Generate AES key for Leon
+#     leon_key = generate_aes_keys()
+#     leon_message = f"Hey {request.user.username}, this is a demo so I will send you my private key so you can chat with me. Everything else will be encrypted so you will need it to talk with me from this point on."
+#
+#     # Encrypt Leon's message
+#     encrypted_leon_message = encrypt_message(leon_message, leon_key)
+#
+#     # Store Leon's encrypted message in the database (optional)
+#     Message.objects.create(MessageChat=encrypted_leon_message)
+#
+#     # Retrieve all messages
+#     messages = Message.objects.all()
+#     encrypted_messages = []
+#     decrypted_messages = []
+#     user_key = generate_aes_keys()  # Generate a key for the user messages
+#
+#     for message in messages:
+#         encrypted_message = encrypt_message(message.MessageChat, user_key)
+#         decrypted_message = decrypt_message(encrypted_message, user_key)
+#
+#         encrypted_messages.append(encrypted_message)
+#         decrypted_messages.append(decrypted_message)
+#
+#     context['messages'] = zip(messages, encrypted_messages, decrypted_messages)
+#     context['leon_message'] = encrypted_leon_message  # Send encrypted message to frontend
+#     context['leon_key'] = b64encode(leon_key).decode('utf-8')  # Encode key for display
+#
+#     return render(request, 'messageHome.html', context)
+
 def message_view(request):
-    # clear_messages = Message.objects.all().delete()
     context = {}
-    if request.method == 'POST':
-        # get message from the form
-        message_description = request.POST.get('freeform', '')
 
-        # Get current Date and Time
-        date = datetime.datetime.now().date()
-        time = datetime.datetime.now().time()
+    leon_message = f"Hey {request.user.username}, this is a demo so I will send you my private key so you can chat with me. Everything else will be encrypted, so you will need it to talk with me from this point on."
 
-        # Create a new Message object from the retrieve message and store in database
-        Message.objects.create(MessageChat=message_description)
+    # Encrypt Leon's message using his public key
+    encrypted_leon_message = encrypt_with_rsa(leon_message, leon_public_key)
 
-        # Retrieve the message from the database
-        messages = Message.objects.all();
-        # context['messages'] = messages
+    # Store Leon’s encrypted message in the database (optional)
+    Message.objects.create(MessageChat=encrypted_leon_message)
 
-        # test for encryption
-
-        # Encrypt and decrypt the messages
-        encrypted_messages = []
-        decrypted_messages = []
-        aes_key = generate_aes_keys()
-
-        for message in messages:
-            encrypted_message = encrypt_message(message.MessageChat, aes_key)
-            decrypted_message = decrypt_message(encrypted_message, aes_key)
-
-            encrypted_messages.append(encrypted_message)
-            decrypted_messages.append(decrypted_message)
-
-        context['messages'] = zip(messages, encrypted_messages, decrypted_messages)
-
-        emessage = encrypt_message(message_description, aes_key)
-        pmessage = decrypt_message(emessage, aes_key)
-        # context['messages'] = pmessage
-        # print(pmessage)
-        # Store encrypted message in database
-        Message.objects.create(MessageChat=emessage)
+    context['leon_message'] = encrypted_leon_message
+    context['leon_private_key'] = leon_private_pem  # Give the user Leon's private key
 
     return render(request, 'messageHome.html', context)
+
 
 
 def logout_view(request):
@@ -134,12 +144,12 @@ def encrypt_message_to_database(message):
     # Message to encrypt
     ciphermessage = encrypt_message(message, aes_key)
     # for debug
-   # print("Encrypted message:", b64encode(ciphermessage).decode())
+    # print("Encrypted message:", b64encode(ciphermessage).decode())
 
     # to decrypt
     decryptedmessage = decrypt_message(message, aes_key)
     # for debug
-   # print("Decrypted message:", b64encode(ciphermessage).decode())
+    # print("Decrypted message:", b64encode(ciphermessage).decode())
 
     return message
 
@@ -188,3 +198,98 @@ def decrypt_message(ciphertext, key):
     # Remove the padding to get the original message
     message = unpadder.update(padded_message) + unpadder.finalize()
     return message.decode('utf-8')
+
+
+def decrypt_message_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            encrypted_message = b64decode(data.get("encrypted_message"))
+            key = b64decode(data.get("key"))
+
+            decrypted_message = decrypt_message(encrypted_message, key)
+            return JsonResponse({"decrypted_message": decrypted_message})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+
+# 6:17 PM 3/19/25
+
+# Generate Leon's RSA key pair
+leon_private_key = rsa.generate_private_key(
+    public_exponent=65537,
+    key_size=2048,
+    backend=default_backend()
+)
+
+leon_public_key = leon_private_key.public_key()
+
+# Export Leon's private key (to share with the user)
+leon_private_pem = leon_private_key.private_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PrivateFormat.PKCS8,
+    encryption_algorithm=serialization.NoEncryption()
+).decode('utf-8')
+
+# Export Leon's public key (for encrypting messages)
+leon_public_pem = leon_public_key.public_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PublicFormat.SubjectPublicKeyInfo
+).decode('utf-8')
+
+
+def encrypt_with_rsa(message, public_key):
+    encrypted_message = public_key.encrypt(
+        message.encode(),
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+    return b64encode(encrypted_message).decode('utf-8')
+
+
+def decrypt_with_rsa(encrypted_message, private_key):
+    decrypted_message = private_key.decrypt(
+        b64decode(encrypted_message),
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+    return decrypted_message.decode('utf-8')
+
+
+def decrypt_message_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            encrypted_message = data.get('encrypted_message')
+            private_key_pem = data.get('key')
+
+            if not private_key_pem:
+                return JsonResponse({"error": "Private key required"}, status=400)
+
+            private_key = serialization.load_pem_private_key(
+                private_key_pem.encode(),
+                password=None
+            )
+
+            decrypted_message = private_key.decrypt(
+                bytes.fromhex(encrypted_message),
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
+            ).decode()
+
+            return JsonResponse({"decrypted_message": decrypted_message})
+
+        except Exception as e:
+            return JsonResponse({"error": "Invalid decryption attempt"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
