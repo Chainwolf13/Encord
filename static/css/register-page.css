@@ -74,3 +74,22 @@ h1 {
     text-transform: uppercase;
     text-shadow: 2px 2px 8px rgba(255, 111, 97, 0.5);
 }
+
+/* Back to Login Link */
+.back-to-login {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.login-link {
+    color: #ff6f61; /* Matching reddish theme */
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+}
+
+.login-link:hover {
+    color: #d84336; /* Darker red on hover */
+    text-decoration: underline;
+}

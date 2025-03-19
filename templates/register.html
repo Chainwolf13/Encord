@@ -45,6 +45,9 @@ References: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_login_
  {% csrf_token %}
  {{ form.as_div }}
  <input type="submit" value="Register">
+     <p class="back-to-login">
+        Already have an account? <a href="{% url 'login' %}" class="login-link">Login here</a>
+    </p>
  </form>
 
 
