@@ -1,104 +1,144 @@
-/* Main Container */
-.message-page-container {
-    display: flex;
-    min-height: 100vh;
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e2f;
+    color: white;
+    margin: 0;
+    padding: 0;
 }
 
-/* Sidebar - Left Section */
+/* Layout Container */
+.message-page-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
 .sidebar {
     width: 250px;
-    background-color: #242933;
-    color: #a6adba;
-    padding-top: 20px;
-    border-right: 2px solid #3d4150;  /* Dark border between the message area */
+    background-color: #2a2d3e;
+    padding: 20px;
 }
 
 .friend {
     display: flex;
     align-items: center;
-    padding: 15px;
+    padding: 10px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background 0.3s;
 }
 
 .friend:hover {
-    background-color: #3d4150;  /* Darker background on hover */
+    background-color: #3a3d4f;
 }
 
 .friend-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin-right: 15px;
+    margin-right: 10px;
 }
 
 .friend-name {
     font-size: 16px;
-    color: #a6adba;
 }
 
-/* Message Section - Right Area */
+/* Messages Section */
 .messages-section {
-    flex-grow: 1;
-    background-color: #3d4150;
+    flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     padding: 20px;
-}
-
-/* Comment Section */
-.comments-section {
-    flex-grow: 1;
     background-color: #242933;
-    color: #a6adba;
-    padding: 20px;
 }
 
+/* Comments Section */
+.comments-section {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Individual Message Styling */
 .comment {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    background-color: #323847;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.avatar {
+    margin-right: 15px;
 }
 
 .avatar-img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
 }
 
-.comments {
-    font-size: 0.9em;
-    color: white;
+/* One-line Input Fields for Private Key */
+input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    font-family: monospace;
+    background-color: #1e1e2f;
+    color: #a6adba;
+    border: 1px solid #444;
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
-/* Message Input */
-.message-bar {
-    background-color: #3d4150;
-    padding: 10px;
+/* Button Container */
+.button-container {
     display: flex;
+    gap: 10px;
     align-items: center;
+    margin-top: 10px;
+}
+
+/* Unified Button Styling (Matches Send Button) */
+.button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #ff6f61;  /* Same as Send Message button */
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    outline: none;
+}
+
+.button:hover {
+    background-color: #e55b4d;
+    transform: scale(1.05);
+}
+
+/* Message Input Bar */
+.message-bar {
+    display: flex;
+    padding: 10px;
+    background-color: #2a2d3e;
+    border-radius: 8px;
 }
 
 .message-input {
     flex-grow: 1;
     padding: 10px;
-    border: 1px solid #444;
+    border: none;
     border-radius: 5px;
-    background-color: #242933;
-    color: #a6adba;
-    margin-right: 10px;
+    background-color: #3a3d4f;
+    color: white;
 }
 
 .send-button {
-    padding: 10px 15px;
-    background-color: #ff6f61;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.send-button:hover {
-    background-color: #e55b4d;
+    margin-left: 10px;
 }

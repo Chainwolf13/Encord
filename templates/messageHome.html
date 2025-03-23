@@ -30,17 +30,28 @@
                 <div>
                     <h3>Leon (Demo Friend)</h3>
                     <p id="leon-encrypted">{{ leon_message }}</p>
+
+                    <!-- Display Leon's Private Key in a one‑line input field with a Copy button -->
                     <h4>Here is Leon's Private Key:</h4>
-                    <textarea id="leon-private-key" rows="5" cols="50" readonly>{{ leon_private_key }}</textarea>
-                    <button onclick="decryptLeonMessage()">Decrypt Leon's Messages</button>
-                    <textarea id="private-key-input" rows="5" cols="50" placeholder="Paste Leon's Private Key"></textarea>
+                    <input type="text" id="leon-private-key" readonly value="{{ leon_private_key }}">
+                    <div class="button-container">
+                        <button class="button" onclick="copyPrivateKey()">Copy Key</button>
+                    </div>
+
+                    <!-- Input field for user to paste the private key for decryption (one line) -->
+                    <h4>Decrypt Leon's Messages:</h4>
+                    <input type="text" id="private-key-input" placeholder="Paste Leon's Private Key">
+                    <div class="button-container">
+                        <button class="button" onclick="decryptLeonMessage()">Decrypt Message</button>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- Message Input Bar -->
         <div class="message-bar">
             <input type="text" class="message-input" placeholder="Type your message...">
-            <button class="send-button">Send</button>
+            <button class="button send-button">Send</button>
         </div>
     </div>
 </div>
@@ -61,14 +72,23 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function copyPrivateKey() {
+    let keyField = document.getElementById("leon-private-key");
+    navigator.clipboard.writeText(keyField.value.trim());
+    alert("Private key copied to clipboard!");
+}
+
 function decryptLeonMessage() {
     let encryptedMessage = document.getElementById("leon-encrypted").innerText;
-    let userKey = document.getElementById("private-key-input").value;
+    let userKey = document.getElementById("private-key-input").value.trim();
 
     if (!userKey) {
         alert("Please enter Leon's private key.");
         return;
     }
+
+    // Handle newline characters if they were replaced with literal "\n"
+    userKey = userKey.replace(/\\n/g, "\n");
 
     fetch('/decrypt_message/', {
         method: 'POST',
