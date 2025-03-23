@@ -272,24 +272,21 @@ def decrypt_message_view(request):
             if not private_key_pem:
                 return JsonResponse({"error": "Private key required"}, status=400)
 
+            # Load the private key from user input
             private_key = serialization.load_pem_private_key(
                 private_key_pem.encode(),
-                password=None
+                password=None,
+                backend=default_backend()
             )
 
-            decrypted_message = private_key.decrypt(
-                bytes.fromhex(encrypted_message),
-                padding.OAEP(
-                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                    algorithm=hashes.SHA256(),
-                    label=None
-                )
-            ).decode()
+            # Decrypt the message
+            decrypted_message = decrypt_with_rsa(encrypted_message, private_key)
 
             return JsonResponse({"decrypted_message": decrypted_message})
 
         except Exception as e:
-            return JsonResponse({"error": "Invalid decryption attempt"}, status=400)
+            return JsonResponse({"error": f"Invalid decryption attempt: {str(e)}"}, status=400)
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
+
 
