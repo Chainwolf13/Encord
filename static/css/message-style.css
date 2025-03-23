@@ -5,12 +5,14 @@ body {
     color: white;
     margin: 0;
     padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll on the body */
 }
 
 /* Layout Container */
 .message-page-container {
     display: flex;
     height: 100vh;
+    max-width: 100vw;  /* Constrain container to viewport width */
 }
 
 /* Sidebar */
@@ -18,6 +20,7 @@ body {
     width: 250px;
     background-color: #2a2d3e;
     padding: 20px;
+    flex-shrink: 0;  /* Keep sidebar fixed in width */
 }
 
 .friend {
@@ -51,12 +54,14 @@ body {
     justify-content: space-between;
     padding: 20px;
     background-color: #242933;
+    overflow: hidden; /* Prevent content from overflowing horizontally */
 }
 
 /* Comments Section */
 .comments-section {
     flex: 1;
     overflow-y: auto;
+    padding-right: 10px; /* Optional spacing for scrollbar */
 }
 
 /* Individual Message Styling */
@@ -67,6 +72,7 @@ body {
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 15px;
+    max-width: 100%;  /* Constrain each message to container width */
 }
 
 .avatar {
@@ -79,7 +85,15 @@ body {
     border-radius: 50%;
 }
 
-/* One-line Input Fields for Private Key */
+/* Force long text to wrap */
+.comment p,
+#leon-encrypted {
+    white-space: pre-wrap;       /* Preserve line breaks and wrap */
+    word-break: break-word;       /* Break long words if needed */
+    max-width: 100%;
+}
+
+/* One-line Input Fields for Private Key and User Message */
 input[type="text"] {
     width: 100%;
     box-sizing: border-box;
@@ -128,6 +142,7 @@ input[type="text"] {
     padding: 10px;
     background-color: #2a2d3e;
     border-radius: 8px;
+    flex-shrink: 0;
 }
 
 .message-input {

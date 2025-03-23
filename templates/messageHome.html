@@ -22,23 +22,25 @@
 
     <!-- Message Section -->
     <div class="messages-section">
-        <div class="comments-section">
+        <div class="comments-section" id="comments-section">
+            <!-- Initial comment (Leon’s encrypted message, private key, etc.) -->
             <div class="comment">
                 <div class="avatar">
-                    <img src="{% static 'images/leon-avatar.jpg' %}" alt="User" class="avatar-img">
+                    <img src="{% static 'images/leon-avatar.jpg' %}" alt="Leon" class="avatar-img">
                 </div>
                 <div>
                     <h3>Leon (Demo Friend)</h3>
+                    <!-- This paragraph now wraps long text -->
                     <p id="leon-encrypted">{{ leon_message }}</p>
 
-                    <!-- Display Leon's Private Key in a one‑line input field with a Copy button -->
+                    <!-- Display Leon's Private Key (one-line) with Copy button -->
                     <h4>Here is Leon's Private Key:</h4>
                     <input type="text" id="leon-private-key" readonly value="{{ leon_private_key }}">
                     <div class="button-container">
                         <button class="button" onclick="copyPrivateKey()">Copy Key</button>
                     </div>
 
-                    <!-- Input field for user to paste the private key for decryption (one line) -->
+                    <!-- Input field for user to paste the key for decryption (one-line) -->
                     <h4>Decrypt Leon's Messages:</h4>
                     <input type="text" id="private-key-input" placeholder="Paste Leon's Private Key">
                     <div class="button-container">
@@ -50,64 +52,156 @@
 
         <!-- Message Input Bar -->
         <div class="message-bar">
-            <input type="text" class="message-input" placeholder="Type your message...">
-            <button class="button send-button">Send</button>
+            <input type="text" class="message-input" id="user-message" placeholder="Type your message...">
+            <button class="button send-button" onclick="sendMessage()">Send</button>
         </div>
     </div>
 </div>
 
 <script>
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        let cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            let cookie = cookies[i].trim();
-            if (cookie.startsWith(name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    // --- Helper Functions ---
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            let cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
-    }
-    return cookieValue;
-}
-
-function copyPrivateKey() {
-    let keyField = document.getElementById("leon-private-key");
-    navigator.clipboard.writeText(keyField.value.trim());
-    alert("Private key copied to clipboard!");
-}
-
-function decryptLeonMessage() {
-    let encryptedMessage = document.getElementById("leon-encrypted").innerText;
-    let userKey = document.getElementById("private-key-input").value.trim();
-
-    if (!userKey) {
-        alert("Please enter Leon's private key.");
-        return;
+        return cookieValue;
     }
 
-    // Handle newline characters if they were replaced with literal "\n"
-    userKey = userKey.replace(/\\n/g, "\n");
+    function copyPrivateKey() {
+        let keyField = document.getElementById("leon-private-key");
+        navigator.clipboard.writeText(keyField.value.trim());
+        alert("Private key copied to clipboard!");
+    }
 
-    fetch('/decrypt_message/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ encrypted_message: encryptedMessage, key: userKey })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.decrypted_message) {
-            document.getElementById("leon-encrypted").innerText = data.decrypted_message;
-        } else {
-            alert("Invalid private key. Try again.");
+    // --- Format Private Key Helper ---
+    function formatPrivateKey(key) {
+        // If the key doesn't contain any newline, add them in PEM style.
+        if (!key.includes("\n")) {
+            key = key.replace("-----BEGIN PRIVATE KEY-----", "-----BEGIN PRIVATE KEY-----\n");
+            key = key.replace("-----END PRIVATE KEY-----", "\n-----END PRIVATE KEY-----");
+            let parts = key.split("\n");
+            if (parts.length === 3) {
+                let header = parts[0];
+                let body = parts[1];
+                let footer = parts[2];
+                // Insert newlines every 64 characters in the body.
+                body = body.match(/.{1,64}/g).join("\n");
+                key = header + "\n" + body + "\n" + footer;
+            }
         }
-    })
-    .catch(error => console.error('Error:', error));
-}
+        return key;
+    }
+
+    function decryptLeonMessage() {
+        let encryptedMessage = document.getElementById("leon-encrypted").innerText;
+        let userKey = document.getElementById("private-key-input").value.trim();
+
+        if (!userKey) {
+            alert("Please enter Leon's private key.");
+            return;
+        }
+
+        // Format the key to reinsert newlines if needed.
+        userKey = formatPrivateKey(userKey);
+
+        fetch('/decrypt_message/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ encrypted_message: encryptedMessage, key: userKey })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.decrypted_message) {
+                document.getElementById("leon-encrypted").innerText = data.decrypted_message;
+            } else {
+                alert("Invalid private key. Try again.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // --- Default Leon Lines ---
+    const leonLines = [
+        "Freeze! I'll shoot!",
+        "Hello? Is anybody here?",
+        "There has to be someone here.",
+        "Not good.",
+        "I gotta find that guy.",
+        "You asshole!",
+        "You bastard.",
+        "I can do this.",
+        "What do I have to do?",
+        "How are you still alive?!?"
+    ];
+
+    // --- Function to Simulate Sending a Message ---
+    function sendMessage() {
+        console.log("sendMessage() called"); // Debug log
+        const userMessageField = document.getElementById("user-message");
+        const userMessage = userMessageField.value.trim();
+        if (!userMessage) {
+            alert("Please type a message.");
+            return;
+        }
+        userMessageField.value = ""; // Clear input
+
+        // Add user's message to the conversation
+        addMessage("You", userMessage, false);
+
+        // Simulate Leon's response after a short delay
+        setTimeout(() => {
+            const randomIndex = Math.floor(Math.random() * leonLines.length);
+            const leonResponse = leonLines[randomIndex];
+            addMessage("Leon", leonResponse, true);
+        }, 500);
+    }
+
+    // --- Function to Add a Message to the Conversation ---
+    function addMessage(sender, text, isLeon) {
+        const commentsSection = document.getElementById("comments-section");
+
+        // Create a new comment div
+        const commentDiv = document.createElement("div");
+        commentDiv.className = "comment";
+
+        // Create avatar div
+        const avatarDiv = document.createElement("div");
+        avatarDiv.className = "avatar";
+        const avatarImg = document.createElement("img");
+        avatarImg.className = "avatar-img";
+        avatarImg.src = isLeon ? "{% static 'images/leon-avatar.jpg' %}" : "https://via.placeholder.com/50";
+        avatarImg.alt = sender;
+        avatarDiv.appendChild(avatarImg);
+
+        // Create message content div
+        const contentDiv = document.createElement("div");
+        const senderHeading = document.createElement("h3");
+        senderHeading.innerText = sender;
+        const messageParagraph = document.createElement("p");
+        messageParagraph.innerText = text;
+
+        contentDiv.appendChild(senderHeading);
+        contentDiv.appendChild(messageParagraph);
+
+        // Append avatar and content divs to the comment div
+        commentDiv.appendChild(avatarDiv);
+        commentDiv.appendChild(contentDiv);
+        commentsSection.appendChild(commentDiv);
+
+        // Scroll to the bottom of the comments section
+        commentsSection.scrollTop = commentsSection.scrollHeight;
+    }
 </script>
 
 </body>
